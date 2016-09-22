@@ -1,0 +1,46 @@
+{
+  "name": "frosit/magerun-rewritetoolset",
+  "description": "A Magerun URL Rewrite toolset for solving core_url_rewrite issues in Magento.",
+  "type": "magerun-addon",
+  "homepage": "https://github.com/frosit/magerun-rewritetoolset.git",
+  "license": "GPL-3.0",
+  "keywords": [
+    "magento",
+    "rewrites",
+    "core_url_rewrites",
+    "frosit",
+    "magerun"
+  ],
+  "authors": [
+    {
+      "name": "Fabio Ros",
+      "homepage": "http://fros.it",
+      "role": "Developer & Owner",
+      "email": "info@frosit.nl"
+    }
+  ],
+  "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.firegento.com"
+    }
+  ],
+  "require": {
+    "magento-hackathon/magento-composer-installer": "^3.0.0",
+    "php": ">=5.5",
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8",
+    "n98/magerun": "dev-develop",
+    "psy/psysh": "0.8.x-dev",
+  },
+  "autoload": {
+    "psr-0": {
+      "Frosit": "src/"
+    }
+  },
+  "extra": {
+    "magento-root-dir": "htdocs"
+  }
+}
