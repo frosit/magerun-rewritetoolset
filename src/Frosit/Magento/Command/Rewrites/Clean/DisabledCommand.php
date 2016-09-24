@@ -71,7 +71,6 @@ class DisabledCommand extends AbstractCleanCommand
             $this->_limit = $input->getOption('limit');
         }
 
-        //temp
 //        ini_set('display_errors', 1);
 //        ini_set('memory_limit', '4000M');
 
@@ -120,26 +119,6 @@ class DisabledCommand extends AbstractCleanCommand
             $this->_output->writeln('<info>Found <comment>' . count($tasks) . '</comment> tasks to process.</info>');
 
             foreach ($tasks as $task) {
-
-                /**
-                 * At this point we have some options depending on the safety and speed
-                 * 1. Bulk all ID's in OR statements and send a blast of SQL query's - recommended for +3Gb tables or stores in big trouble - we keep a log of product ID's for an afterwards action of fixing - must build it first though
-                 * 2. loop all product ID's for fetching and removing. We can do stuff like keep the newest ones, verify bugs, use a Google file for whitelisting, immedeatly fix the products etc.
-                 * 3. Just truncate the shit out of that table with WHERE statements only on the disabled stores
-                 * 4. Only remove rewrites after x timestamp (we know which rewrites for created at which date)
-                 *
-                 * And a lot of strategies more
-                 *
-                 * We can dry run - just gather stats, only the select statements are kinda heavy but your bulking them
-                 * We can do a clean process while checking mytop through a subshell too modify the impact of this command, have it rest sometime
-                 * We can run Atwix style, which is nice but slow
-                 *
-                 * Must solve the issue structurally though...
-                 *
-                 * Let's nuke some rewrites for stores in big trouble
-                 */
-
-                // @todo can run different types of cleaning tasks
 
                 $result = $this->runDisabledTask($task);
                 if ($result) {

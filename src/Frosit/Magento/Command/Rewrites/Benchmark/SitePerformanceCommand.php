@@ -195,8 +195,6 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
             $config['limit'] = $input->getOption('limit');
         }
 
-        eval(\Psy\sh());
-
         return $config;
     }
 

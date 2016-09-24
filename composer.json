@@ -35,6 +35,11 @@
     "n98/magerun": "dev-develop",
     "psy/psysh": "0.8.x-dev"
   },
+  "autoload": {
+    "psr-0": {
+      "Frosit": "src/"
+    }
+  },
   "extra": {
     "magento-root-dir": "htdocs"
   }

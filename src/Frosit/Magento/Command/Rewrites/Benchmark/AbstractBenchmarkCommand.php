@@ -30,6 +30,10 @@ abstract class AbstractBenchmarkCommand extends AbstractRewritesCommand
         $this->setOptions();
     }
 
+    /**
+     * End of command
+     * @param $statistics
+     */
     public function processCommandEnd($statistics){
         parent::processCommandEnd($statistics);
 

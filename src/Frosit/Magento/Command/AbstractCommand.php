@@ -16,11 +16,16 @@
 
 namespace Frosit\Magento\Command;
 
+use Frosit\Utils\Mysql\MysqliDb;
+use Frosit\Utils\UtilsHelper;
 use Symfony\Component\Console\Input\InputOption;
 use N98\Util\Console\Helper\TwigHelper;
 use N98\Magento\Command\AbstractMagentoCommand;
 
-
+/**
+ * Class AbstractCommand
+ * @package Frosit\Magento\Command
+ */
 abstract class AbstractCommand extends AbstractMagentoCommand
 {
 
@@ -300,7 +305,8 @@ abstract class AbstractCommand extends AbstractMagentoCommand
         }
         if ($this->getRewriteToolsConfig('api')['enabled']) {
             $apiConfig = $this->getRewriteToolsConfig('api');
-            $curl = $this->getCurl();
+            $utilsHelper = new UtilsHelper();
+            $curl = $utilsHelper->getCurl();
 
             $stats = $this->prepareStatistics($statistics);
 

@@ -7,10 +7,13 @@
  * @author      Fabio Ros <info@frosit.nl>
  * @copyright   Copyright (c) 2016 Fabio Ros - FROSIT
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ * 
  */
 
 namespace Frosit\Utils;
 
+use Frosit\Utils\Csv\parseCSV;
 use Frosit\Utils\Curl\MultiCurl;
 use Frosit\Utils\Curl\Curl;
 use Frosit\Utils\Magento\Urls as MagentoUrls;
@@ -25,6 +28,7 @@ class UtilsHelper
     protected $_curl;
     protected $_multicurl;
     protected $_mageurl;
+    protected $_parseCsv;
 
 
     /**
@@ -33,6 +37,27 @@ class UtilsHelper
     public function __construct()
     {
 
+    }
+
+    /**
+     * @return parseCSV
+     */
+    public function getParseCsv()
+    {
+        if (null === $this->_parseCsv) {
+            $this->_parseCsv = new parseCSV();
+        }
+        return $this->_parseCsv;
+    }
+
+    /**
+     * @param parseCSV $parseCSV
+     * @return $this
+     */
+    public function setParseCsv(parseCSV $parseCSV)
+    {
+        $this->_parseCsv = $parseCSV;
+        return $this;
     }
 
     /**
