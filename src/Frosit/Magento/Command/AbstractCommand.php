@@ -261,7 +261,6 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     /**
      * Prepare statistics data
      * @todo the shop uid is always the same at hypernode, change this
-     * @todo make these statistics more user friendly
      * @param $statistics
      * @return array
      */

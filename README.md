@@ -8,6 +8,8 @@ This repository contains a set of magerun commands for solving core url rewrite 
 | Staging | [![Build Status](https://travis-ci.org/frosit/magerun-rewritetoolset.svg?branch=staging)](https://travis-ci.org/frosit/magerun-rewritetoolset) |
 
 
+__Note: work in progress.__
+
 # Installation
 
 The easiest way to install is by using modman:

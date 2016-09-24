@@ -9,38 +9,36 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-namespace Frosit\Magento\Command\Rewrites;
+namespace Frosit\Magento\Command\Rewrites\Clean;
 
 use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class AbstractRewriteCommandsTest
+ * Class AbstractCleanCommandTest
  */
-class AbstractRewritesCommandsTest extends \PHPUnit_Framework_TestCase
-{
+class AbstractCleanCommandTest extends \PHPUnit_Framework_TestCase {
 
     /**
-     * @var AbstractRewritesCommandsTest
+     * @var AbstractCleanCommandTest
      */
     protected $_abstract;
 
     public function setUp()
     {
-        $abstractClass = $this->getMockForAbstractClass(AbstractRewritesCommandsTest::class, ['testAbstract']);
+        $abstractClass = $this->getMockForAbstractClass(AbstractCleanCommandTest::class, ['testAbstract']);
         $this->_abstract = $abstractClass;
     }
 
 
-    public function getCommand()
-    {
-        return new Analysis\TotalsCommand();
+    public function getCommand(){
+        return new DisabledCommand();
     }
 
     public function testOptions()
     {
         $command = $this->getCommand();
-        $this->assertEquals('store', $command->getDefinition()
-            ->getOption('store')->getName());
+        $this->assertEquals('dry-run', $command->getDefinition()
+            ->getOption('dry-run')->getName());
     }
 }

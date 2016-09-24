@@ -9,8 +9,8 @@ We have options and arguments defined by section/scope and higher levels like ma
 
 __Top-level options__
 
-* --logstats : saves the statistics as a json file in var/rewrite_toolset/stats - for use in further data statistics.
-* --sharestats : sends the statistics _anonymous_ to a server for further analysis, this endpoint can be overridden.
+* --log-statistics : saves the statistics as a json file in var/rewrite_toolset/stats - for use in further data statistics.
+* --share-statistics : sends the statistics to a server or database for further analysis, this endpoint can be overridden using magerun configuration
 
 _above options accept no values_
 
