@@ -18,13 +18,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class SitemapCommand
  * @package Frosit\Magento\Command\Rewrites\Benchmark
  */
-class ResolveUrlCommand extends AbstractBenchmarkCommand
+class UrlResolveCommand extends AbstractBenchmarkCommand
 {
 
     protected function configure()
     {
         $this
-            ->setName('rewrites:benchmark:resolve-url')
+            ->setName('rewrites:benchmark:resolve-urls')
             ->setDescription('Benchmarks URL resolve times by triggering sitemap generate actions.');
     }
 

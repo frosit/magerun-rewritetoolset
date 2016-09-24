@@ -23,10 +23,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class YoloCommand extends AbstractCleanCommand
 {
 
-    protected $_storeviews;
-
-    protected $_options;
-
     protected function configure()
     {
         $this
@@ -45,8 +41,6 @@ class YoloCommand extends AbstractCleanCommand
             $this->setRewriteToolsCommandConfig($this->getCommandConfig());
         }
 
-        $this->_options = $input->getOptions();
-
         $stores = $this->prepareStoresFromInput($input->getOption('store'));
 
         $statistics = array();
@@ -54,20 +48,22 @@ class YoloCommand extends AbstractCleanCommand
         // header
         $this->writeSection($output, 'Rewrite Clean. [FROSIT]');
 
-        // now i should always have an array - ask the user to confirm
+        // ask some user confirm
         $helper = $this->getHelper('question');
         if (!$input->getOption('dry-run')) {
-            $question = new ConfirmationQuestion("<error>WARNING</error> <info>Removing rewrites may cause <comment>negative SEO</comment> and <comment>404's</comment> but </info> <comment>improves performance!</comment> <question>Yolo?</question><comment> [Y/n]</comment>", false);
+            $question = new ConfirmationQuestion("<error>WARNING</error> <info>Removing rewrites may cause <comment>negative SEO</comment> and <comment>404's</comment> but </info><comment>improves performance!</comment> <question>Yolo?</question><comment> [Y/n]</comment>", false);
 
             if (!$helper->ask($input, $output, $question)) {
                 return;
             }
         }
 
+        // start cleaning loop
+        // @todo add process and make big db proof
         foreach ($stores as $store) {
             if ($store == 0) {
                 if (count($stores) == 1) {
-                    $output->writeln('<error>Do not screw with the admin store, which is the only selected</error>');
+                    $output->writeln('<error>Do not mess with the admin store, which is the only selected</error>');
                 }
                 continue;
             }
@@ -78,7 +74,7 @@ class YoloCommand extends AbstractCleanCommand
             } else {
                 $query .= "DELETE ";
             }
-            $query .= "FROM `core_url_rewrite` WHERE `store_id` = " . $store . " AND `is_system` = 0 AND `options` = 'RP' ";
+            $query .= "FROM `core_url_rewrite` WHERE `store_id` = " . $store['store_id'] . " AND `is_system` = 0 AND `options` = 'RP' ";
             $connection = $this->getConnection();
 
             if ($input->getOption('dry-run')) {
@@ -87,9 +83,11 @@ class YoloCommand extends AbstractCleanCommand
                 $result = $connection->query($query)->rowCount();
             }
 
-            $output->writeln('<info>Removed <comment>' . $result . '</comment> rows for store <comment>' . $store . '</comment> from the database.</info>');
+            $output->writeln('<info>Removed <comment>' . $result . '</comment> rows for store <comment>' . $store['name'] . '</comment> from the database.</info>');
 
-            $this->processCommandEnd($statistics);
+            $statistics[] = array($store,"removed_rows"=> $result);
         }
+
+        $this->processCommandEnd($statistics);
     }
 }

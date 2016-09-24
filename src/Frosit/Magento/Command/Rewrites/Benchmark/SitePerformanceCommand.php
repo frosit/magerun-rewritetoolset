@@ -15,6 +15,7 @@
 
 namespace Frosit\Magento\Command\Rewrites\Benchmark;
 
+use Frosit\Utils\UtilsHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,12 +34,12 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
             ->setName('rewrites:benchmark:site-performance')
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limits the URLs to crawl', 100)
             ->addOption('noProducts', null, InputOption::VALUE_NONE, 'Skips product URLs')
-            ->addOption('noCategories', null, InputOption::VALUE_NONE)
+            ->addOption('noCategories', null, InputOption::VALUE_NONE, 'Skips Category URLs')
             ->addOption('noCms', null, InputOption::VALUE_NONE, 'Skips CMS urls')
             ->addOption('warm-cache', null, InputOption::VALUE_NONE, 'Quickly warms the cache by very fast multicurling')
             ->addOption('no-mc', null, InputOption::VALUE_NONE, 'Uses regular curling instead of multi, rate limits...')
             ->addOption('random', null, InputOption::VALUE_NONE, 'Randomizes URls, works good with limit for some diversity.')
-            ->addOption('to-sitemap', null, InputOption::VALUE_NONE, 'Saves the loaded URL in a sitemap, use it when this takes a long time.')
+            ->addOption('to-sitemap', null, InputOption::VALUE_NONE, 'Saves the loaded URL in a sitemap.')
             ->setDescription('Benchmarks site performance by crawling the registered urls.');
     }
 
@@ -68,7 +69,8 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
         // url class
         $config = $this->prepareConfig($input);
         $sitemap = $input->getOption('to-sitemap') ? $input->getOption('to-sitemap') : false;
-        $urls = $this->getMagentoUrls()->getUrls($stores, $config, $sitemap);
+
+        $urls = $this->getUtilsHelper()->getMagentoUrls()->getUrls($stores, $config, $sitemap);
 
         if ($input->getOption('warm-cache')) {
             if ($input->getOption('no-mc')) {
@@ -122,7 +124,7 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
      */
     public function simpleCurl($url)
     {
-        $curl = $this->getCurl();
+        $curl = $this->getUtilsHelper()->getCurl();
         $curl->setOpt(CURLOPT_RETURNTRANSFER, true);
         $curl->setOpt(CURLOPT_SSL_VERIFYHOST, 0);
         $curl->setOpt(CURLOPT_SSL_VERIFYPEER, 0);
@@ -137,12 +139,13 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
     }
 
     /**
-     * Fast multicurl function
+     * Fast multicurl for warming up the cache
+     * @todo return data from $instance
      * @param $urls
      */
     public function multicurl($urls)
     {
-        $multicurl = $this->getMultiCurl();
+        $multicurl = $this->getUtilsHelper()->getMultiCurl();
         $chunks = array_chunk($urls, 25);
         foreach ($chunks as $chunk) {
             $multicurl->success(function ($instance) {
@@ -162,12 +165,18 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
     }
 
     /**
+     * Prepares the url resolve configuration
      * @param InputInterface $input
      * @return array
      */
     public function prepareConfig(InputInterface $input)
     {
-        $config = [];
+        $config = [
+            "random" => false,
+            "products" => false, // @note, the input var is "noProducts"
+            "categories" => false,
+            "cms" => false
+        ];
         // get urls
         if ($input->getOption('random')) {
             $config['random'] = true;
@@ -185,6 +194,9 @@ class SitePerformanceCommand extends AbstractBenchmarkCommand
         if ($input->getOption('limit')) {
             $config['limit'] = $input->getOption('limit');
         }
+
+        eval(\Psy\sh());
+
         return $config;
     }
 

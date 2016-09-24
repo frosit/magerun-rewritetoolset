@@ -19,7 +19,7 @@ use Frosit\Utils\Magento\Urls as MagentoUrls;
  * Class AbstractGetSet
  * @package Frosit\Magento
  */
-class Utils
+class UtilsHelper
 {
 
     protected $_curl;

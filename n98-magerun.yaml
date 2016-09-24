@@ -1,0 +1,37 @@
+autoloaders:
+  Frosit: %module%/src
+
+twig:
+  baseDirs:
+  - %module%/res/twig
+
+commands:
+  customCommands:
+    - Frosit\Magento\Command\Rewrites\Analysis\HistoryCommand
+    - Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand
+    - Frosit\Magento\Command\Rewrites\Benchmark\IndexerCommand
+    - Frosit\Magento\Command\Rewrites\Benchmark\SitePerformanceCommand
+    - Frosit\Magento\Command\Rewrites\Benchmark\UrlResolveCommand
+    - Frosit\Magento\Command\Rewrites\Clean\DisabledCommand
+    - Frosit\Magento\Command\Rewrites\Clean\YoloCommand
+
+  Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand:
+    twig: "rewrites/analysis/totals.twig"
+
+  Frosit\Magento\Command\Rewrites\Analysis\HistoryCommand:
+    twig: "rewrites/analysis/history.twig"
+
+  Frosit\Magento\Command\Rewrites\Benchmark\IndexerCommand:
+    twig: "rewrites/benchmark/indexer.twig"
+
+rewriteTools:
+    dataDir: "rewrite_toolset"
+    api:
+      enabled: false
+      host: "http://myendpoint.dev/saveEntity"
+    db:
+      enabled: false
+      dbhost: dbhost
+      dbuser: dbuser
+      dbpass: dbpass
+      dbname: dbname

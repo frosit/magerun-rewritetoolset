@@ -18,9 +18,7 @@ namespace Frosit\Magento\Command;
 
 use Symfony\Component\Console\Input\InputOption;
 use N98\Util\Console\Helper\TwigHelper;
-use Frosit\Utils\Mysql\MysqliDb;
 use N98\Magento\Command\AbstractMagentoCommand;
-use Frosit\Utils\Utils;
 
 
 abstract class AbstractCommand extends AbstractMagentoCommand
@@ -47,9 +45,6 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     protected $cmdStart;
 
-    public $utils;
-
-
     /**
      * constructor to run at every command
      */
@@ -68,30 +63,10 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     private function setDefaultOptions()
     {
-        $this->addOption('log-statistics', 'logstats', InputOption::VALUE_NONE, 'Saves statistics as json in the var directory.');
-        $this->addOption('share-statistics', 'sharestats', InputOption::VALUE_NONE, 'Shares the stats for research to a specified endpoint.');
+        $this->addOption('log-statistics', null, InputOption::VALUE_NONE, 'Saves statistics as json in the var directory.');
+        $this->addOption('share-statistics', null, InputOption::VALUE_NONE, 'Shares the stats for research to a specified endpoint.');
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUtils()
-    {
-        if (null === $this->utils) {
-            $this->_curl = new Utils();
-        }
-        return $this->utils;
-    }
-
-    /**
-     * @param Utils $utils
-     * @return $this
-     */
-    public function setUtils(Utils $utils)
-    {
-        $this->utils = $utils;
-        return $this;
-    }
 
     /**
      * Gets the RewriteToolsCommand Configuration
@@ -121,7 +96,8 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     protected function setRewriteToolsCommandConfig($config)
     {
-        $this->_rewriteToolsCommand['name'] = end(array_reverse(explode(" ", str_replace(":", "_", $this->getSynopsis()))));
+        $parts = array_reverse(explode(" ", str_replace(":", "_", $this->getSynopsis())));
+        $this->_rewriteToolsCommand['name'] = end($parts);
         $this->_rewriteToolsCommand['config'] = $config;
     }
 
@@ -254,19 +230,25 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     {
         $filename = $this->getRewritesDataDir('reports') . DS . $this->_rewriteToolsCommand['name'] . '-' . time() . ".html";
         $twigFile = $this->getRewriteToolsCommandConfig('twig');
-        $twigVars = array(
-            "date" => date('Y-m-d H:i:s T', time()),
-            "command" => $this->getRewriteToolsCommandConfig(),
-            "statistics" => $statistics
-        );
 
-        /** @var $twigHelper TwigHelper */
-        $twigHelper = $this->getHelper('twig');
-        $buffer = $twigHelper->render($twigFile, $twigVars);
-        if (file_put_contents($filename, $buffer)) {
-            return true;
+        if ($twigFile) {
+            $twigVars = array(
+                "date" => date('Y-m-d H:i:s T', time()),
+                "command" => $this->getRewriteToolsCommandConfig(),
+                "statistics" => $statistics
+            );
+
+            /** @var $twigHelper TwigHelper */
+            $twigHelper = $this->getHelper('twig');
+            $buffer = $twigHelper->render($twigFile, $twigVars);
+            if (file_put_contents($filename, $buffer)) {
+                return true;
+            } else {
+                $this->log('Something went wrong rendering the twig template and storing it.');
+                return false;
+            }
         } else {
-            $this->log('Something went wrong rendering the twig template and storing it.');
+            $this->_error("no twig file was found or set for this command");
             return false;
         }
     }
@@ -310,8 +292,11 @@ abstract class AbstractCommand extends AbstractMagentoCommand
      */
     public function shareStatistics($statistics)
     {
+        $result = false;
         if ($dbCredentials = $this->getRewriteToolsConfig('db')['enabled']) {
-            $this->saveStatsToDb($statistics);
+            if ($this->saveStatsToDb($statistics)) {
+                $result = true;
+            }
         }
         if ($this->getRewriteToolsConfig('api')['enabled']) {
             $apiConfig = $this->getRewriteToolsConfig('api');
@@ -321,14 +306,12 @@ abstract class AbstractCommand extends AbstractMagentoCommand
 
             $curl->post($apiConfig['host'], $stats, true);
             if ($curl->httpStatusCode == 200) {
-                return $this->_info('stats hares');
+                $result = true;
             } else {
-                $this->log('Something went wrong while sharing statistics');
-                return false;
+                $this->log('Something went wrong while sending the statistics');
             }
-        } else {
-            return false;
         }
+        return $result;
     }
 
     /**
@@ -362,25 +345,14 @@ abstract class AbstractCommand extends AbstractMagentoCommand
     public function processCommandEnd($statistics)
     {
         // saving stats
-        if ($this->_input->getOption('logstats')) {
+        if ($this->_input->getOption('log-statistics')) {
             $this->saveStatisticsAsJson($statistics);
         }
 
-        // generating report
-        if ($this->_input->getOption('save')) {
-            if ($this->generateHtmlReport($statistics)) {
-                $this->_info('saved the report');
-            } else {
-                $this->_error('report could not be saved or generated');
-            }
-        }
-
         // Share with API
-        if ($this->_input->getOption('sharestats')) {
+        if ($this->_input->getOption('share-statistics')) {
             if ($this->shareStatistics($statistics)) {
                 $this->_info('Statistics were succesfully transmitted');
-            } else {
-                $this->_error('Something went wrong while sharing the statisctics');
             }
         }
     }

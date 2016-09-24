@@ -30,6 +30,19 @@ abstract class AbstractAnalysisCommand extends AbstractRewritesCommand
         $this->setOptions();
     }
 
+    public function processCommandEnd($statistics){
+        parent::processCommandEnd($statistics);
+
+        // generating report
+        if ($this->_input->getOption('save')) {
+            if ($this->generateHtmlReport($statistics)) {
+                $this->_info('saved the report');
+            } else {
+                $this->_error('report could not be saved or generated');
+            }
+        }
+    }
+
     /**
      * Set default options for all analysis commands
      */

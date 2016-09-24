@@ -71,7 +71,6 @@ class DisabledCommand extends AbstractCleanCommand
             $this->_limit = $input->getOption('limit');
         }
 
-
         //temp
 //        ini_set('display_errors', 1);
 //        ini_set('memory_limit', '4000M');
@@ -88,26 +87,23 @@ class DisabledCommand extends AbstractCleanCommand
         // header
         $this->writeSection($output, 'Rewrites Cleaning. [FROSIT]');
 
-
-        $confirmHelper = $this->getHelper('question');
-        $confirmation = new ConfirmationQuestion("<error>This command is experimental, continue at your own risk.</error>", false);
-
-        if (!$confirmHelper->ask($input, $output, $confirmation)) {
-            return;
+        $helper = $this->getHelper('question');
+        if (!$input->getOption('dry-run')) {
+            $question = new ConfirmationQuestion("<error>WARNING</error> <info>This command is <comment>experimental</comment> Continue at your own risk, test setup adviced. </info><question>Continue?</question><comment> [Y/n]</comment>", false);
+            if (!$helper->ask($input, $output, $question)) {
+                return;
+            }
         }
 
         // create tasks
         $tasks = $this->prepareCleaningTasks($stores);
 
         // ======== Process Cleaning Tasks ====
-        $taskResults = $this->processCleaningTasks($tasks);
+        $statistics = $this->processCleaningTasks($tasks);
 
-        $statistics = $taskResults;
-
-        $output->writeln('<info>Finished executing <info>' . count($taskResults) . '</info> task(s)</info>');
+        $output->writeln('<info>Finished executing <info>' . count($statistics) . '</info> task(s)</info>');
 
         $this->processCommandEnd($statistics);
-
 
     }
 
@@ -358,14 +354,34 @@ class DisabledCommand extends AbstractCleanCommand
      * Gets the entity_id for the product is active field.
      * @return int
      */
-    public
-    function getActiveStatusEntityId()
+    public function getActiveStatusEntityId()
     {
         $model = \Mage::getModel('catalog/resource_eav_attribute')
             ->getIdByCode("catalog_product", "status");
         return $model;
     }
 
+
+    /**
+     * Check if store is active
+     * @note check for a null value
+     * @todo find out if can be handled better - 1 or "1" etc
+     * @param $storeData
+     * @return mixed
+     */
+    public function isStoreActive($store)
+    {
+        if (is_array($store) && isset($store['is_active'])) {
+            $active = $store['is_active'];
+        } else {
+            $this->_error("Can't check the store's active state, invalid input");
+        }
+        if (isset($active)) {
+            return $active;
+        } else {
+            return false;
+        }
+    }
 
 }
 
