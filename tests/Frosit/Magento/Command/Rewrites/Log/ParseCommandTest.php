@@ -9,22 +9,22 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-namespace Frosit\Magento\Command\Rewrites\Clean;
+namespace Frosit\Magento\Command\Rewrites\Log;
 
 use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class YoloCommandTest
- * @package Frosit\Magento\Command\Rewrites\Clean
+ * Class ParseCommandTest
+ * @package Frosit\Magento\Command\Rewrites\Log
  */
-class YoloCommandTest extends TestCase
+class ParseCommandTest extends TestCase
 {
 
     public function setUp()
     {
         $application = $this->getApplication();
-        $command = new YoloCommand();
+        $command = new ParseCommand();
 
         $application->add($command);
     }
@@ -32,13 +32,13 @@ class YoloCommandTest extends TestCase
     public function getCommand()
     {
         return $this->getApplication()
-            ->find('rewrites:clean:yolo');
+            ->find('rewrites:log:parse');
     }
 
     public function testName()
     {
         $command = $this->getCommand();
-        $this->assertEquals('rewrites:clean:yolo', $command->getName());
+        $this->assertEquals('rewrites:log:parse', $command->getName());
     }
 
 }

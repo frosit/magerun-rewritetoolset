@@ -9,22 +9,22 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
-namespace Frosit\Magento\Command\Rewrites\Clean;
+namespace Frosit\Magento\Command\Rewrites\Url;
 
 use N98\Magento\Command\PHPUnit\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class YoloCommandTest
- * @package Frosit\Magento\Command\Rewrites\Clean
+ * Class VisitorCommandTest
+ * @package Frosit\Magento\Command\Rewrites\Url
  */
-class YoloCommandTest extends TestCase
+class VisitorCommandTest extends TestCase
 {
 
     public function setUp()
     {
         $application = $this->getApplication();
-        $command = new YoloCommand();
+        $command = new VisitorCommand();
 
         $application->add($command);
     }
@@ -32,13 +32,13 @@ class YoloCommandTest extends TestCase
     public function getCommand()
     {
         return $this->getApplication()
-            ->find('rewrites:clean:yolo');
+            ->find('rewrites:url:visitor');
     }
 
     public function testName()
     {
         $command = $this->getCommand();
-        $this->assertEquals('rewrites:clean:yolo', $command->getName());
+        $this->assertEquals('rewrites:url:visitor', $command->getName());
     }
 
 }

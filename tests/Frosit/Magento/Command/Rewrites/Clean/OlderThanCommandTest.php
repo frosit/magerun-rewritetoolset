@@ -12,19 +12,18 @@
 namespace Frosit\Magento\Command\Rewrites\Clean;
 
 use N98\Magento\Command\PHPUnit\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Class YoloCommandTest
+ * Class OlderThanCommandTest
  * @package Frosit\Magento\Command\Rewrites\Clean
  */
-class YoloCommandTest extends TestCase
+class OlderThanCommandTest extends TestCase
 {
 
     public function setUp()
     {
         $application = $this->getApplication();
-        $command = new YoloCommand();
+        $command = new OlderThanCommand();
 
         $application->add($command);
     }
@@ -32,13 +31,13 @@ class YoloCommandTest extends TestCase
     public function getCommand()
     {
         return $this->getApplication()
-            ->find('rewrites:clean:yolo');
+            ->find('rewrites:clean:older-than');
     }
 
     public function testName()
     {
         $command = $this->getCommand();
-        $this->assertEquals('rewrites:clean:yolo', $command->getName());
+        $this->assertEquals('rewrites:clean:older-than', $command->getName());
     }
 
 }
