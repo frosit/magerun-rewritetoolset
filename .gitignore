@@ -1,0 +1,30 @@
+# Ignore file for URLRewriteTools
+
+# Various IDE OS files that should never be committed
+.DS_Store
+*.swp
+*.lock
+__MACOSX
+.idea
+/nbproject/*
+.project
+.buildpath
+.thumbs
+Thumbs.db
+.settings
+/_notes/*
+
+# Repository
+/vendor/
+/htdocs
+/public
+/public_html
+/coverage*
+/phpunit.xml
+
+# Developer
+/apidocs
+/devdocs
+/developer
+/composer.phar
+/n98-magerun.phar
