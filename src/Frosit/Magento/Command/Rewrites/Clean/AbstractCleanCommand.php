@@ -9,6 +9,13 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
 
+/**
+ * Dev notes
+ *
+ * @todo add whitelist
+ * @refactor whole section
+ */
+
 namespace Frosit\Magento\Command\Rewrites\Clean;
 
 use Frosit\Magento\Command\Rewrites\AbstractRewritesCommand;
@@ -75,100 +82,6 @@ abstract class AbstractCleanCommand extends AbstractRewritesCommand
         $product = \Mage::getModel('catalog/product')->setStore()->setStoreId($storeId)->load($productId);
         $status = $product->getStatus();
         return $status == $this->_disabledValue ? true : false;
-    }
-
-    /**
-     * Fetches URLs from CSV
-     * @param $filename
-     * @param $column
-     * @return array|bool
-     */
-    public function getUrlsFromCsv($filename, $column)
-    {
-        $file = $this->_magentoRootFolder . DS . $filename;
-        if (file_exists($file)) {
-            $csv = new parseCSV();
-            $csv->auto($file);
-            $urlList = array_column($csv->data, $column);
-            $cleanUrls = $this->cleanUrls($urlList);
-            return $cleanUrls;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Cleans out bad URLs
-     * @param $urls
-     * @return array
-     */
-    public function cleanUrls($urls)
-    {
-        $cleanUrls = array();
-        foreach ($urls as $url) {
-            $badUrl = false;
-            if (strpos($url, "?")) {
-                continue;
-            }
-            if ($url == "") {
-                continue;
-            }
-            $url = ltrim($url, "/");
-            if (!$badUrl) {
-                $cleanUrls[] = $url;
-            }
-        }
-        return $cleanUrls;
-    }
-
-
-    /**
-     * Fetches DB Credentials
-     * @return array
-     */
-    public function getDbCredentials()
-    {
-        $config = \Mage::getConfig()->getResourceConnectionConfig("default_setup");
-        $credentials = array(
-            "host" => (string)$config->host,
-            "username" => (string)$config->username,
-            "password" => (string)$config->password,
-            "db" => (string)$config->dbname
-        );
-        return $credentials;
-    }
-
-    /**
-     * Gets urls for the visitor log table
-     * @return array
-     */
-    public function getLoggedUrls()
-    {
-        $db = $this->getDb();
-        $urlInfo = $db->get('log_url_info');
-        $urls = array_column($urlInfo, 'url');
-        return $urls;
-    }
-
-    /**
-     * Gets the id's that are whitelisted
-     * @param $urls
-     * @param bool $store
-     */
-    public function getWhitelistedRewriteIds($urls, $store = false)
-    {
-        $ids = array();
-        $db = $this->getDb();
-        foreach ($urls as $url) {
-            $db->where('request_path', $url);
-            if ($store) {
-                $db->where('store_id', $store['store_id']);
-            }
-            $rewrites = $db->get('core_url_rewrite', 500, 'url_rewrite_id');
-            if ($db->count > 0) {
-                // @todo finish
-            }
-        }
     }
 
 }

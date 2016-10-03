@@ -7,13 +7,13 @@
  * @author      Fabio Ros <info@frosit.nl>
  * @copyright   Copyright (c) 2016 Fabio Ros - FROSIT
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
+/**
+ * Dev notes
  *
  * @todo better cleaning by simple / invisible / out of stock products
  * @todo add functionality for detecting and or leaving the last two
- * @todo write another command for keeping worty google urls by analytics CSV
- * @add possibility for removing also non-disabled ones, a more aggresive approach
- *
- * @note - this is for disabled entities and considered to be a POC boilerplate for other methods
+ * @todo remove redundant variables
  */
 
 namespace Frosit\Magento\Command\Rewrites\Clean;
@@ -24,8 +24,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class CleanCommand
- * @package Frosit\Magento\Command\Dev\Rewrites
+ * Class DisabledCommand
+ * @package Frosit\Magento\Command\Rewrites\Clean
  */
 class DisabledCommand extends AbstractCleanCommand
 {
@@ -46,7 +46,7 @@ class DisabledCommand extends AbstractCleanCommand
         $this
             ->setName('rewrites:clean:disabled')
             ->addOption('limit', null, InputOption::VALUE_OPTIONAL, 'Specify a limit for testing purposes')
-            ->setDescription('Cleans out some redundant rewrites based on disabled products or store views. [experimental]');
+            ->setDescription('Cleans out some redundant rewrites based on disabled products or store views. [development]');
     }
 
     /**
@@ -71,9 +71,6 @@ class DisabledCommand extends AbstractCleanCommand
             $this->_limit = $input->getOption('limit');
         }
 
-//        ini_set('display_errors', 1);
-//        ini_set('memory_limit', '4000M');
-
         // fetching variables @todo maybe redundant too - add to abstract
         $storageDir = $this->_storageDir = \Mage::getBaseDir('var') . DS . 'rewritecleaner' . DS;
         $entityTypeId = $this->_entityTypeId = \Mage::getModel('eav/entity')->setType('catalog_product')->getTypeId();
@@ -88,7 +85,7 @@ class DisabledCommand extends AbstractCleanCommand
 
         $helper = $this->getHelper('question');
         if (!$input->getOption('dry-run')) {
-            $question = new ConfirmationQuestion("<error>WARNING</error> <info>This command is <comment>experimental</comment> Continue at your own risk, test setup adviced. </info><question>Continue?</question><comment> [Y/n]</comment>", false);
+            $question = new ConfirmationQuestion("<error>Caution</error> <info>This command is in <comment>development </comment> Continue at your own risk, test setup adviced. </info><question>Continue?</question><comment> [Y/n]</comment>", false);
             if (!$helper->ask($input, $output, $question)) {
                 return;
             }
@@ -100,10 +97,9 @@ class DisabledCommand extends AbstractCleanCommand
         // ======== Process Cleaning Tasks ====
         $statistics = $this->processCleaningTasks($tasks);
 
-        $output->writeln('<info>Finished executing <info>' . count($statistics) . '</info> task(s)</info>');
+        $this->_info("Finished executing <comment>" . count($statistics) . "</comment> task(s)");
 
         $this->processCommandEnd($statistics);
-
     }
 
     /**
@@ -116,7 +112,7 @@ class DisabledCommand extends AbstractCleanCommand
         if (is_array($tasks)) {
 
             $results = array();
-            $this->_output->writeln('<info>Found <comment>' . count($tasks) . '</comment> tasks to process.</info>');
+            $this->_info("Found <comment>" . count($tasks) . "</comment> tasks to process.");
 
             foreach ($tasks as $task) {
 
@@ -128,7 +124,7 @@ class DisabledCommand extends AbstractCleanCommand
             return $results;
 
         } else {
-            $this->_output->writeln('<error>Something went wrong with the task data.</error>');
+            $this->_error('Something went wrong with the task data.');
             return false;
         }
     }
@@ -165,8 +161,6 @@ class DisabledCommand extends AbstractCleanCommand
             return false;
         }
 
-
-        // alright, user has given consent to wreck his database
         if ($type == "delete_rewrites_per_store_by_product_id") {
             $result[$type] = $this->deleteRewritesPerStoreByProductId($task['product_ids'], $task['store_data']['store_id']);
         } elseif ($type == "delete_rewrites_per_store") {
@@ -251,9 +245,7 @@ class DisabledCommand extends AbstractCleanCommand
      */
     public function deleteRewritesPerStoreByProductId($ids, $storeId, $bulk = false)
     {
-
         $results = array();
-
         foreach ($ids as $id) {
             $query = '';
             if ($this->_dryRun) {
@@ -262,19 +254,14 @@ class DisabledCommand extends AbstractCleanCommand
                 $query .= "DELETE ";
             }
             $query .= "FROM `core_url_rewrite` WHERE `store_id` = " . $storeId . " AND `product_id` = " . $id;
-
-
             $connection = $this->getConnection();
-
             if ($this->_dryRun) {
                 $result = $connection->fetchOne($query);
             } else {
                 $result = $connection->query($query)->rowCount();
             }
-
             $results[$id] = $result;
-
-            $this->_output->writeln('<info>Removed <comment>' . $result . '</comment> rows for product with id: <comment>' . $id . '</comment> from the database.</info>');
+            $this->_info("Removed <comment>" . $result . "</comment> rows for product with id: <comment>" . $id . "</comment> from the database.");
         }
         return $results;
     }
@@ -301,7 +288,7 @@ class DisabledCommand extends AbstractCleanCommand
             $result = $connection->query($query)->rowCount();
         }
 
-        $this->_output->writeln('<info>Removed <comment>' . $result . '</comment> rows for store <comment>' . $storeId . '</comment> from the database.</info>');
+        $this->_info("Removed <comment>" . $result . "</comment> rows for store <comment>" . $storeId . "</comment> from the database.");
         return $result;
     }
 
@@ -342,11 +329,9 @@ class DisabledCommand extends AbstractCleanCommand
 
 
     /**
-     * Check if store is active
-     * @note check for a null value
-     * @todo find out if can be handled better - 1 or "1" etc
-     * @param $storeData
-     * @return mixed
+     * Checks if the store is active
+     * @param $store
+     * @return bool|mixed
      */
     public function isStoreActive($store)
     {

@@ -13,26 +13,31 @@
  *
  * @todo unify database querying
  * @todo filter out user defined rewrites
+ * @todo add process
+ * @todo test against large db
  */
+
 
 namespace Frosit\Magento\Command\Rewrites\Clean;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
- * Class YoloCommand
+ * Class OlderThanCommand
  * @package Frosit\Magento\Command\Rewrites\Clean
  */
-class YoloCommand extends AbstractCleanCommand
+class OlderThanCommand extends AbstractCleanCommand
 {
 
     protected function configure()
     {
         $this
-            ->setName('rewrites:clean:yolo')
-            ->setDescription('Removes ALL dupes. [development]');
+            ->setName('rewrites:clean:older-than')
+            ->addArgument('days', InputArgument::REQUIRED, 'Amount of days the rewrite should be older than now')
+            ->setDescription('Remove all dupes older than x days [development]');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -51,12 +56,17 @@ class YoloCommand extends AbstractCleanCommand
         $statistics = array();
 
         // header
-        $this->writeSection($output, 'Rewrite Clean. [FROSIT]');
+        $this->writeSection($output, 'Rewrites Clean. [FROSIT]');
 
-        // ask some user confirm
+        $days = $input->getArgument('days');
+        $nowTimestamp = time();
+        $thresholdTimestamp = $nowTimestamp - ($days * 86400);
+        $thresholdDatetime = date('Y-m-d H:i:s', $thresholdTimestamp);
+
+
         $helper = $this->getHelper('question');
         if (!$input->getOption('dry-run')) {
-            $question = new ConfirmationQuestion("<error>Caution</error> <info>Removing rewrites may cause <comment>negative SEO</comment> and <comment>404's</comment> but </info><comment>improves performance!</comment> <question>Yolo?</question><comment> [Y/n]</comment>", false);
+            $question = new ConfirmationQuestion("<error>Caution!</error> Are you sure you want to remove all rewrites older than <comment>" . $thresholdDatetime . " (" . $days . ")</comment> days? <question>Continue?</question><comment> [Y/n]</comment>", false);
 
             if (!$helper->ask($input, $output, $question)) {
                 return;
@@ -68,7 +78,7 @@ class YoloCommand extends AbstractCleanCommand
         foreach ($stores as $store) {
             if ($store == 0) {
                 if (count($stores) == 1) {
-                    $this->_error("Do not mess with the admin store, which is the only selected");
+                    $output->writeln('<error>Select a different store.</error>');
                 }
                 continue;
             }
@@ -79,7 +89,7 @@ class YoloCommand extends AbstractCleanCommand
             } else {
                 $query .= "DELETE ";
             }
-            $query .= "FROM `core_url_rewrite` WHERE `store_id` = " . $store['store_id'] . " AND `is_system` = 0 AND `options` = 'RP' ";
+            $query .= "FROM `core_url_rewrite` WHERE `store_id` = " . $store['store_id'] . " AND `is_system` = 0 AND `options` = 'RP' AND substring_index(`id_path`, '_', -1) < " . $thresholdTimestamp . " ";
             $connection = $this->getConnection();
 
             if ($input->getOption('dry-run')) {

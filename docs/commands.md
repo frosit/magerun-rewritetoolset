@@ -113,11 +113,25 @@ __options__
 * --limit @dep 
 * --dry-run : does not execute delete querys
 
-### rewrites:clea:yolo
+### rewrites:clean:older-than
+
+Cleans out all rewrites older than x days
+
+* development, documented
+
+__arguments__
+
+* days : x days as number, rewrites older than x days from now are to be removed
+
+__options__
+
+* --dry-run
+
+### rewrites:clean:yolo
 
 Cleans out every duplicate rewrite
 
-* tested, documented
+* development, documented
 
 __options__
 
