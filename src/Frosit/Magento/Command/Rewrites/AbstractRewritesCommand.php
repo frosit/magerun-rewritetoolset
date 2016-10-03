@@ -19,13 +19,16 @@ namespace Frosit\Magento\Command\Rewrites;
 use Frosit\Magento\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Class AbstractRewritesCommand
+ * @package Frosit\Magento\Command\Rewrites
+ */
 abstract class AbstractRewritesCommand extends AbstractCommand
 {
 
     public function __construct()
     {
         parent::__construct();
-
         $this->setOptions();
     }
 
@@ -39,6 +42,14 @@ abstract class AbstractRewritesCommand extends AbstractCommand
     }
 
     /**
+     * @return string
+     */
+    protected function getDataDir()
+    {
+        return $this->getRewritesDataDir('data');
+    }
+
+    /**
      * Prepares User store input
      * @todo add result validation
      * @param null $input
@@ -48,6 +59,7 @@ abstract class AbstractRewritesCommand extends AbstractCommand
      */
     public function prepareStoresFromInput($input = null, $onlyStoreIds = false, $validateResult = true)
     {
+
         $stores = array();
         $oid = $onlyStoreIds;
         if (strpos($input, ",")) {
@@ -135,5 +147,58 @@ abstract class AbstractRewritesCommand extends AbstractCommand
         $resource = \Mage::getSingleton('core/resource');
         $readConnection = $resource->getConnection('core_read');
         return $readConnection;
+    }
+
+    /**
+     * Fetches DB Credentials
+     * @return array
+     */
+    public function getDbCredentials()
+    {
+        $config = \Mage::getConfig()->getResourceConnectionConfig("default_setup");
+        $credentials = array(
+            "host" => (string)$config->host,
+            "username" => (string)$config->username,
+            "password" => (string)$config->password,
+            "db" => (string)$config->dbname
+        );
+        return $credentials;
+    }
+
+    /**
+     * Cleans out bad urls
+     * @todo duplicate function
+     * @param $url
+     * @return bool
+     */
+    public function validateUrl($url)
+    {
+        $ignoreValues = array("?", "&", "=", ":", "~", "%", ")", ","); // add all characters not supposed in string for url rewrite
+        $customIgnores = array("/w/", "__", "_-", "-_", "/form_key/", "uenc", ".php", ".git", "/../", "/sendfriend/product/send/"); // add default magento paths, modules (layered nav), commong hacks
+        $acceptedExtensions = array("html"); // also get extension from store
+
+        $valid = true;
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+        foreach ($ignoreValues as $ignoreValue) {
+            if (strpos($url, $ignoreValue)) {
+                $valid = false;
+                break;
+            }
+        }
+        if ($valid && $ext) {
+            if (!in_array($ext, $acceptedExtensions)) {
+                $valid = false;
+                // maybe continue
+            }
+        }
+        if ($valid) {
+            foreach ($customIgnores as $customIgnore) {
+                if (strpos($url, $customIgnore)) {
+                    $valid = false;
+                    break;
+                }
+            }
+        }
+        return $valid ? $url : false;
     }
 }
