@@ -136,3 +136,27 @@ Cleans out every duplicate rewrite
 __options__
 
 * --dry-run
+
+## Section: Fix
+
+This section contains commands for fixing products with duplicate url_keys
+
+_note_ Early development
+
+### rewrites:fix:products
+
+This command fixes url_keys of products that duplicate by adding a unique suffix to the key.
+url_keys can be made unique in 3 ways, using the current duplicate url as the unique url, using the product id or the sku. The first 2 methods are advices and current_url set by default.
+This command uses Magento's models load and save function which are relatively slow due to the trigger of single reindex.
+This command only runs on the global scope and skips products with url_key configurations in child scopes.
+
+* development | tested, documented
+
+__options__
+
+* --new-suffix : Suffix to append after url-key. accepts: current_url, product_id, sku, default: current_url
+* --seperator : Seperator character between url_key and suffix, default: -
+* --limit : Limits the amount of products to be fetches als duplicated (testing purposes)
+* --dry-run : does not execute product save
+
+
