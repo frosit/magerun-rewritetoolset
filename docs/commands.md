@@ -9,17 +9,18 @@ We have options and arguments defined by section/scope and higher levels like ma
 
 __Top-level options__
 
-* --log-statistics : saves the statistics as a json file in var/rewrite_toolset/stats - for use in further data statistics.
+* --log-statistics : saves the statistics as a JSON file in var/rewrite_toolset/stats - for use in further data statistics.
 * --share-statistics : sends the statistics to a server or database for further analysis, this endpoint can be overridden using magerun configuration
 
 _above options accept no values_
-_note_ Options are becoming obsolete and do not have a function everywhere despite listing in command info
+
+_note_: Options are becoming obsolete and do not have a function everywhere despite listing in command info. This is to earlier research stages of this project. Legacy code resides and will be cleaned in following releases.
 
 __Rewrite-level options__
 
-* --store "somevalue" : pre-selects store(s), skipping the prompt, usefull when chaining commands
+* --store "somevalue" : pre-selects store(s), skipping the prompt, useful when chaining commands
     * accepts: string, int, array
-        * an array can be given comma seperated and accepts strings and integers
+        * an array can be given comma separated and accepts strings and integers
     * all stores: add "all" for selecting all stores
 
 
@@ -31,7 +32,7 @@ The following commands are here by section.
 
 The analysis commands are all about finding out and determining the scope.
 
-__Options__
+__options__
 
 The following options are available for the analysis commands.
 
@@ -50,7 +51,7 @@ The history command generates a table (preferably HTML report) showing a timelin
 
 * stable, documented
 
-__Options__
+__options__
 
 * --limit : limits the amount of rewrites parsed for history per store view. Use this in case of timeouts.
 
@@ -85,7 +86,7 @@ __options__
 
 ### rewrites:benchmark:site-performance
 
-Tests site performance by crawling URls. Command is becoming obsolete
+Tests site performance by crawling URLs. Command is becoming obsolete
 
 * obsolete, requires refactor
 
@@ -100,7 +101,7 @@ Tests the time to resolve urls by generating a sitemap.
 
 This section contains commands for cleaning out duplicates.
 
-_note_ There's much development in this section
+_note_ There's much development going on in this section.
 
 ### rewrites:clean:disabled
 
@@ -111,7 +112,7 @@ Cleans out rewrites from disabled stores and products.
 __options__
 
 * --limit @dep 
-* --dry-run : does not execute delete querys
+* --dry-run : does not execute delete queries
 
 ### rewrites:clean:older-than
 
@@ -141,7 +142,7 @@ __options__
 
 This section contains commands for fixing products with duplicate url_keys
 
-_note_ Early development
+_note_ : Early stage development
 
 ### rewrites:fix:products
 
@@ -155,18 +156,18 @@ This command only runs on the global scope and skips products with url_key confi
 __options__
 
 * --new-suffix : Suffix to append after url-key. accepts: current_url, product_id, sku, default: current_url
-* --seperator : Seperator character between url_key and suffix, default: -
+* --seperator : Separator character between url_key and suffix, default: -
 * --limit : Limits the amount of products to be fetches als duplicated (testing purposes)
 * --dry-run : does not execute product save
 
 
 ## Section: Log
 
-This section is actually redundant and only contains one command. Due to it's nature i'd like to keep it seperated for now.
+This section is actually redundant and only contains one command. Due to it's nature i'd like to keep it separated for now.
 
 ### rewrites:log:parse
 
-Parses access logs into a json database. Currently only supports the hypernode platform by this specific command:
+Parses access logs into a JSON database. Currently only supports the hypernode platform by this specific command:
 
 * unstable, tested hypernode only
 
@@ -176,32 +177,32 @@ the file option can be modified, above example uses glob.
 
 __options (current)__
 
-* --file : path/pattern to access logs (autodetect is buggy)
-* --to-db : specify a different json db id for overwriting or testing
+* --file : path/pattern to access logs (auto-detect is buggy)
+* --to-db : specify a different JSON db id for overwriting or testing
 * --clean : filters out urls with the validateUrl function, enabled by default
 * --webserver : override webserver identification (apache/nginx)
-* --platofrom : override platform identification (only hypernode)
+* --platform : override platform identification (only hypernode)
 
 #### Features currently
 
-* supports parsing nginx access logs, by single file or globbing
+* supports parsing Nginx access logs, by single file or globing
 * support plain-text or gzipped access logs
 * filters out bad requests by several patterns (e.g. to js/css/img, urls containing: ?=% etc. more patterns and custom patterns will be added, refer to AbstractRewritesCommand.php validateUrl()
-* memory management : identifies running out of memory, triggers uniqueing results and garbage collect cycles
+* memory management : identifies running out of memory, triggers uniquing results and garbage collect cycles
 * identifies platform and platform available commands (wc, cat)
-* identifies apache, nginx, hypernode (apache parsing unfinished)
+* identifies apache, Nginx, hypernode (apache parsing unfinished)
 
 
 ## Section: url
 
-This section contains commands for adding sources to whitelists. For more information about the whitelisting methodology, refer to the wiki.
+This section contains commands for adding sources to whitelists. For more information about the whitelisting methodology, refer to the [wiki](https://github.com/frosit/magerun-rewritetoolset/wiki) .
 In short, we add all url's that are considered active and indexed by search engines to a whitelist. We compare this whitelist to the duplicate rewrites database to secure all rewrites that hold any value.
 There are 3 methods of adding urls to the whitelist, one is specified is log:parse.
 
 
 ### rewrites:url:csv
 
-Adds urls to a whitelist json db from CSV source. Adding a google analytics CSV is adviced.
+Adds urls to a whitelist JSON db from CSV source. Adding a google analytics CSV is advised.
 
 * stable, documented
 
@@ -209,10 +210,10 @@ Adds urls to a whitelist json db from CSV source. Adding a google analytics CSV 
 
 __options__
 
-* --csv : path to csv file
+* --csv : path to CSV file
 * --column : column that holds the urls
 
-The [ParseCSV](https://github.com/parsecsv/parsecsv-for-php) class is used for autodetection.
+The [ParseCSV](https://github.com/parsecsv/parsecsv-for-php) class is used for auto-detection.
 
 
 ### rewrites:url:visitor
@@ -228,7 +229,7 @@ __options__
 ### rewrites:url:whitelist
 
 Combines, filters and compares all urls from sources to the rewrites table for whitelisting important rewrites.
-Refer to the wiki for more information about the whitelist methodology which is a safegaurd for valuable rewrites.
+Refer to the [wiki](https://github.com/frosit/magerun-rewritetoolset/wiki) for more information about the whitelist methodology which is a safeguard for valuable rewrites.
 
 * development, tested
 
@@ -237,7 +238,7 @@ Refer to the wiki for more information about the whitelist methodology which is 
 __options__
 
 * --max-age : maximum age in days for rewrites in core_url_rewrite to be added to the master whitelist for safekeeping, default: 60
-* --debug : dumps json in each step for debugging (merging, create segments, query segments)
+* --debug : dumps JSON in each step for debugging (merging, create segments, query segments)
 
 
 

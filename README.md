@@ -35,28 +35,42 @@ For more in-depth information see the [wiki](https://github.com/frosit/magerun-r
 
 We have several segments of commands.
 
-* analysis : Analyzes the current state of this problem
-* benchmarking : Benchmarks parts related to the problem
-* cleaning : Solves the problem
+* analysis : Analyses the current state of this problem
+* benchmarking : Benchmarks parts related to the problem to get an indication of impact
+* cleaning : Cleans out redundant rewrites
+* Fixing : Permanent fixes
+* Log / url : commands for preserving important urls
 
 ## Quick Overview
 
 * rewrites:analysis:totals
 * rewrites:analysis:history
-* rewrites:benchmark:index
-* rewrites:benchmark:url-resolve
+* rewrites:analysis:top
+* rewrites:benchmark:indexer
+* rewrites:benchmark:site-performance
+* rewrites:benchmark:resolve-urls
 * rewrites:clean:disabled
+* rewrites:clean:older-than
 * rewrites:clean:yolo
+* rewrites:fix:products
+* rewrites:log:parse
+* rewrites:url:csv
+* rewrites:url:visitor
+* rewrites:url:whitelist
 
-These commands are initially stable, more will follow.
+This project is in early development stages and contains experimental commands, refer to the command documentation for usage.
 Fore more in-dept information about commands usage, see the [wiki](https://github.com/frosit/magerun-rewritetoolset/wiki)
 
 # Contributing
 
-There are various solutions for this problem and each situation requires a different solution. Feel free to contibute. Create a PR, follow coding standards and don't let Travis spam my inbox. (i don't mind successfull builds)
+There are various solutions for this problem and each situation requires a different solution. Feel free to contribute in any way. Create a PR, follow coding standards and don't let Travis spam my inbox. (i don't mind successful builds)
+
+# Disclaimer
+
+This project is an effort to provide some tools to help understand and solve this widespread issue. Usage of these commands is at own risk. Always backup and test on development setups before executing at production environments.
 
 # Credits
 
-Development of these tools was sponsored by [Byte](http://www.byte.nl)
+Development of this toolset was sponsored by [Byte](http://www.byte.nl)
 
 
