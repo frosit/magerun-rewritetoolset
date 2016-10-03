@@ -14,7 +14,6 @@ commands:
     - Frosit\Magento\Command\Rewrites\Benchmark\UrlResolveCommand
     - Frosit\Magento\Command\Rewrites\Clean\DisabledCommand
     - Frosit\Magento\Command\Rewrites\Clean\YoloCommand
-#    - Frosit\Magento\Command\Rewrites\Clean\SearchEngineCommand
 
   Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand:
     twig: "rewrites/analysis/totals.twig"

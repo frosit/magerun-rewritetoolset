@@ -30,6 +30,7 @@ class IndexerCommand extends AbstractBenchmarkCommand
         $this
             ->setName('rewrites:benchmark:indexer')
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Amount of reindex actions', 10)
+            ->addOption('microtime', 'm', InputOption::VALUE_NONE, 'Display times in microtime')
             ->setDescription('Runs the indexer a couple of times to measure increase in url rewrites.');
     }
 
@@ -46,6 +47,8 @@ class IndexerCommand extends AbstractBenchmarkCommand
 
         // limit
         $limit = $input->getOption('limit') > 0 ? $input->getOption('limit') : false;
+        $microtime = $input->getOption('microtime') ? $input->getOption('microtime') : false;
+
         if ($limit) { // prevent infinite index
 
             // base values
@@ -61,7 +64,7 @@ class IndexerCommand extends AbstractBenchmarkCommand
 
                 $startRows = $this->countRows($output);
                 $indexResults['run'] = $i;
-                $indexResults['runtime'] = $this->executeReIndex();
+                $indexResults['runtime'] = $this->executeReIndex($microtime);
                 $indexResults['total_rows'] = $this->countRows($output);
                 $indexResults['new_rows'] = $indexResults['total_rows'] - $startRows;
                 array_push($statistics, $indexResults);
@@ -118,7 +121,7 @@ class IndexerCommand extends AbstractBenchmarkCommand
      * Execute the url_rewrite reindex action
      * @return int|null
      */
-    protected function executeReIndex()
+    protected function executeReIndex($microtime = false)
     {
         $indexCode = "catalog_url";
         $this->disableObservers();
@@ -130,13 +133,23 @@ class IndexerCommand extends AbstractBenchmarkCommand
                 throw new InvalidArgumentException('Indexer was not found!');
             }
 
-            $startTime = new \DateTime('now');
+            if(!$microtime){
+                $startTime = new \DateTime('now');
+            } else {
+                $startTime = microtime(true);
+            }
 
             $process->reindexEverything();
             \Mage::dispatchEvent($process->getIndexerCode() . '_shell_reindex_after');
 
-            $endTime = new \DateTime('now');
-            $runtime = $endTime->getTimestamp() - $startTime->getTimestamp();
+            if(!$microtime){
+                $endTime = new \DateTime('now');
+                $runtime = $endTime->getTimestamp() - $startTime->getTimestamp();
+            } else{
+                $endTime = microtime(true);
+                $runtime = $endTime - $startTime;
+            }
+
 
             \Mage::dispatchEvent('shell_reindex_finalize_process');
         } catch (Exception $e) {
