@@ -17,6 +17,7 @@ commands:
     - Frosit\Magento\Command\Rewrites\Clean\YoloCommand
     - Frosit\Magento\Command\Rewrites\Clean\OlderThanCommand
     - Frosit\Magento\Command\Rewrites\Fix\ProductsCommand
+    - Frosit\Magento\Command\Rewrites\Log\ParseCommand
 
   Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand:
     twig: "rewrites/analysis/totals.twig"
@@ -26,6 +27,10 @@ commands:
 
   Frosit\Magento\Command\Rewrites\Benchmark\IndexerCommand:
     twig: "rewrites/benchmark/indexer.twig"
+
+  Frosit\Magento\Command\Rewrites\Log\ParseCommand:
+    nginx_acces_logs: "/var/log/nginx/access.log*"
+    apache_access_logs: "/var/log/apache2/access.log*"
 
 rewriteTools:
     dataDir: "rewrite_toolset"
@@ -38,3 +43,16 @@ rewriteTools:
       dbuser: dbuser
       dbpass: dbpass
       dbname: dbname
+
+rwtoolset:
+  defaults:
+
+    urldb:
+      logs: "log_parsed"
+
+    urlignore:
+     - "?"
+     - "&"
+     - "="
+     - "+"
+     - "*"
