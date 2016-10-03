@@ -58,6 +58,16 @@ __note__
 
 Easily results in timeouts and memory shortages if the rewrite table is large. When in trouble, increase these limits or use the `rewrites:clean:disabled` command to clear out some garbage.
 
+### rewrites:analysis:top
+
+Shows products and categories with the most duplicate rewrites
+
+* stable, documented
+
+__options__
+
+* --limit : limits the amount of top entities to show
+
 ## Section: Benchmark
 
 This section is all about testing / discovering impact.
