@@ -41,4 +41,11 @@ class VisitorCommandTest extends TestCase
         $this->assertEquals('rewrites:url:visitor', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('max-age', $command->getDefinition()
+            ->getOption('max-age')->getName());
+    }
+
 }

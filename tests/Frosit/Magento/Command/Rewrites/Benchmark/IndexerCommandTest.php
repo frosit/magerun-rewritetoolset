@@ -41,4 +41,13 @@ class IndexerCommandTest extends testCase
         $this->assertEquals('rewrites:benchmark:indexer', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('limit', $command->getDefinition()
+            ->getOption('limit')->getName());
+        $this->assertEquals('microtime', $command->getDefinition()
+            ->getOption('microtime')->getName());
+    }
+
 }

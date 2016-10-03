@@ -42,4 +42,15 @@ class ProductsCommandTest extends TestCase
         $this->assertEquals('rewrites:fix:products', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('new-suffix', $command->getDefinition()
+            ->getOption('new-suffix')->getName());
+        $this->assertEquals('seperator', $command->getDefinition()
+            ->getOption('seperator')->getName());
+        $this->assertEquals('limit', $command->getDefinition()
+            ->getOption('limit')->getName());
+    }
+
 }

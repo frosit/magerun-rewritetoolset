@@ -41,4 +41,13 @@ class WhitelistCommandTest extends TestCase
         $this->assertEquals('rewrites:url:whitelist', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('max-age', $command->getDefinition()
+            ->getOption('max-age')->getName());
+        $this->assertEquals('debug', $command->getDefinition()
+            ->getOption('debug')->getName());
+    }
+
 }

@@ -41,4 +41,11 @@ class DisabledCommandTest extends TestCase
         $this->assertEquals('rewrites:clean:disabled', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('limit', $command->getDefinition()
+            ->getOption('limit')->getName());
+    }
+
 }

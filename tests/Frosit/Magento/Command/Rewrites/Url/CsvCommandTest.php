@@ -41,4 +41,13 @@ class CsvCommandTest extends TestCase
         $this->assertEquals('rewrites:url:csv', $command->getName());
     }
 
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('csv', $command->getDefinition()
+            ->getOption('csv')->getName());
+        $this->assertEquals('column', $command->getDefinition()
+            ->getOption('column')->getName());
+    }
+
 }

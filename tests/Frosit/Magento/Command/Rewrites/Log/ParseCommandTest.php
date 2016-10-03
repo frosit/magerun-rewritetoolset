@@ -40,5 +40,19 @@ class ParseCommandTest extends TestCase
         $command = $this->getCommand();
         $this->assertEquals('rewrites:log:parse', $command->getName());
     }
+    public function testOptions()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('file', $command->getDefinition()
+            ->getOption('file')->getName());
+        $this->assertEquals('to-db', $command->getDefinition()
+            ->getOption('to-db')->getName());
+        $this->assertEquals('clean', $command->getDefinition()
+            ->getOption('clean')->getName());
+        $this->assertEquals('webserver', $command->getDefinition()
+            ->getOption('webserver')->getName());
+        $this->assertEquals('platform', $command->getDefinition()
+            ->getOption('platform')->getName());
+    }
 
 }

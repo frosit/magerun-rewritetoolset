@@ -40,4 +40,11 @@ class OlderThanCommandTest extends TestCase
         $this->assertEquals('rewrites:clean:older-than', $command->getName());
     }
 
+    public function testArguments()
+    {
+        $command = $this->getCommand();
+        $this->assertEquals('days', $command->getDefinition()
+            ->getArgument('days')->getName());
+    }
+
 }
