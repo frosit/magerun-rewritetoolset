@@ -8,7 +8,7 @@
  * @copyright   Copyright (c) 2016 Fabio Ros - FROSIT
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
- * 
+ *
  */
 
 namespace Frosit\Utils;
@@ -17,6 +17,11 @@ use Frosit\Utils\Csv\parseCSV;
 use Frosit\Utils\Curl\MultiCurl;
 use Frosit\Utils\Curl\Curl;
 use Frosit\Utils\Magento\Urls as MagentoUrls;
+
+use Frosit\Utils\MicroDB\Cache;
+use Frosit\Utils\MicroDB\Database;
+use Frosit\Utils\MicroDB\Event;
+use Frosit\Utils\MicroDB\Index;
 
 /**
  * Class AbstractGetSet
@@ -29,6 +34,11 @@ class UtilsHelper
     protected $_multicurl;
     protected $_mageurl;
     protected $_parseCsv;
+
+    public $mdbcache;
+    public $mdb;
+    public $mdbevent;
+    public $mdbindex;
 
 
     /**
@@ -126,6 +136,100 @@ class UtilsHelper
     public function setMagentoUrls(MagentoUrls $mageurl)
     {
         $this->_mageurl = $mageurl;
+        return $this;
+    }
+
+
+    /**
+     * @param $mdb
+     * @return Cache
+     */
+    public function getMdbcache($mdb)
+    {
+        if (null === $this->mdbcache) {
+            $this->mdbcache = new Cache($mdb);
+        }
+        return $this->mdbcache;
+    }
+
+    /**
+     * @param Cache $mdbcache
+     * @return $this
+     */
+    public function setMdbcache(Cache $mdbcache)
+    {
+        $this->mdbcache = $mdbcache;
+        return $this;
+    }
+
+    /**
+     * @param $mdb
+     * @return Database
+     */
+    public function getMdb($mdb)
+    {
+        if (null === $this->mdb) {
+            $this->mdb = new Database($mdb);
+        }
+        return $this->mdb;
+    }
+
+    /**
+     * @param Database $mdb
+     * @return $this
+     */
+    public function setMdb(Database $mdb)
+    {
+        $this->mdb = $mdb;
+        return $this;
+    }
+
+    /**
+     * @param $mdb
+     * @param $id
+     * @param $data
+     * @return Event
+     */
+    public function getMdbevent($mdb, $id, $data)
+    {
+        if (null === $this->mdbevent) {
+            $this->mdbevent = new Event($mdb, $id, $data);
+        }
+        return $this->mdbevent;
+    }
+
+    /**
+     * @param Event $mdbevent
+     * @return $this
+     */
+    public function setMdbevent(Event $mdbevent)
+    {
+        $this->mdbevent = $mdbevent;
+        return $this;
+    }
+
+    /**
+     * @param $mdb
+     * @param $name
+     * @param $keyFunc
+     * @param null $compare
+     * @return Index
+     */
+    public function getMdbindex($mdb, $name, $keyFunc, $compare = null)
+    {
+        if (null === $this->mdbindex) {
+            $this->mdbindex = new Index($mdb, $name, $keyFunc, $compare);
+        }
+        return $this->mdbindex;
+    }
+
+    /**
+     * @param Index $mdbindex
+     * @return $this
+     */
+    public function setMdbindex(Index $mdbindex)
+    {
+        $this->mdbindex = $mdbindex;
         return $this;
     }
 

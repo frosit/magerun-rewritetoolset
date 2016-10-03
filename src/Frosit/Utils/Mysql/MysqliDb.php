@@ -270,7 +270,7 @@ class MysqliDb
     /**
      * A method to connect to the database
      *
-     * @throws Exception
+     * @throws \Exception
      * @return void
      */
     public function connect()
@@ -280,13 +280,13 @@ class MysqliDb
         }
 
         if (empty($this->host)) {
-            throw new Exception('MySQL host is not set');
+            throw new \Exception('MySQL host is not set');
         }
 
         $this->_mysqli = new mysqli($this->host, $this->username, $this->password, $this->db, $this->port);
 
         if ($this->_mysqli->connect_error) {
-            throw new Exception('Connect Error ' . $this->_mysqli->connect_errno . ': ' . $this->_mysqli->connect_error, $this->_mysqli->connect_errno);
+            throw new \Exception('Connect Error ' . $this->_mysqli->connect_errno . ': ' . $this->_mysqli->connect_error, $this->_mysqli->connect_errno);
         }
 
         if ($this->charset) {
@@ -413,7 +413,7 @@ class MysqliDb
 
         // Failed?
         if(!$stmt){
-            throw new Exception("Unprepared Query Failed, ERRNO: ".$this->mysqli()->errno." (".$this->mysqli()->error.")", $this->mysqli()->errno);
+            throw new \Exception("Unprepared Query Failed, ERRNO: ".$this->mysqli()->errno." (".$this->mysqli()->error.")", $this->mysqli()->errno);
         };
 
         // return stmt for future use
@@ -532,7 +532,7 @@ class MysqliDb
      *
      * @param string|array $options The optons name of the query.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return MysqliDb
      */
     public function setQueryOption($options)
@@ -548,7 +548,7 @@ class MysqliDb
         foreach ($options as $option) {
             $option = strtoupper($option);
             if (!in_array($option, $allowedOptions)) {
-                throw new Exception('Wrong query option: ' . $option);
+                throw new \Exception('Wrong query option: ' . $option);
             }
 
             if ($option == 'MYSQLI_NESTJOIN') {
@@ -925,7 +925,7 @@ class MysqliDb
      * @param string $joinCondition the condition.
      * @param string $joinType 'LEFT', 'INNER' etc.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return MysqliDb
      */
     public function join($joinTable, $joinCondition, $joinType = '')
@@ -934,7 +934,7 @@ class MysqliDb
         $joinType = strtoupper(trim($joinType));
 
         if ($joinType && !in_array($joinType, $allowedTypes)) {
-            throw new Exception('Wrong JOIN type: ' . $joinType);
+            throw new \Exception('Wrong JOIN type: ' . $joinType);
         }
 
         if (!is_object($joinTable)) {
@@ -961,8 +961,8 @@ class MysqliDb
     {
         // We have to check if the file exists
         if(!file_exists($importFile)) {
-            // Throw an exception
-            throw new Exception("importCSV -> importFile ".$importFile." does not exists!");
+            // Throw an \exception
+            throw new \Exception("importCSV -> importFile ".$importFile." does not exists!");
             return;
         }
 
@@ -1025,7 +1025,7 @@ class MysqliDb
         // We have to check if the file exists
         if(!file_exists($importFile)) {
             // Does not exists
-            throw new Exception("loadXml: Import file does not exists");
+            throw new \Exception("loadXml: Import file does not exists");
             return;
         }
 
@@ -1072,7 +1072,7 @@ class MysqliDb
      * @param string $orderByDirection Order direction.
      * @param array $customFields Fieldset for ORDER BY FIELD() ordering
      *
-     * @throws Exception
+     * @throws \Exception
      * @return MysqliDb
      */
     public function orderBy($orderByField, $orderbyDirection = "DESC", $customFields = null)
@@ -1088,7 +1088,7 @@ class MysqliDb
 
 
         if (empty($orderbyDirection) || !in_array($orderbyDirection, $allowedDirection)) {
-            throw new Exception('Wrong order direction: ' . $orderbyDirection);
+            throw new \Exception('Wrong order direction: ' . $orderbyDirection);
         }
 
         if (is_array($customFields)) {
@@ -1127,7 +1127,7 @@ class MysqliDb
      * @author Jonas Barascu
      * @param  string   $method The table lock method. Can be READ or WRITE.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return MysqliDb
      */
     public function setLockMethod($method)
@@ -1140,8 +1140,8 @@ class MysqliDb
                 $this->_tableLockMethod = $method;
                 break;
             default:
-                // Else throw an exception
-                throw new Exception("Bad lock type: Can be either READ or WRITE");
+                // Else throw an \exception
+                throw new \Exception("Bad lock type: Can be either READ or WRITE");
                 break;
         }
         return $this;
@@ -1153,7 +1153,7 @@ class MysqliDb
      * @author Jonas Barascu
      * @param string  $table The table to be locked. Can be a table or a view.
      *
-     * @throws Exception
+     * @throws \Exception
      * @return MysqliDb if succeeeded;
      */
     public function lock($table)
@@ -1196,7 +1196,7 @@ class MysqliDb
         }
         // Something went wrong
         else {
-            throw new Exception("Locking of table ".$table." failed", $errno);
+            throw new \Exception("Locking of table ".$table." failed", $errno);
         }
 
         // Return the success value
@@ -1229,7 +1229,7 @@ class MysqliDb
         }
         // Something went wrong
         else {
-            throw new Exception("Unlocking of tables failed", $errno);
+            throw new \Exception("Unlocking of tables failed", $errno);
         }
 
 
@@ -1582,7 +1582,7 @@ class MysqliDb
      * @param array $tableColumns
      * @param bool $isInsert INSERT operation flag
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function _buildDataPairs($tableData, $tableColumns, $isInsert)
     {
@@ -1631,7 +1631,7 @@ class MysqliDb
                     }
                     break;
                 default:
-                    throw new Exception("Wrong operation");
+                    throw new \Exception("Wrong operation");
             }
         }
         $this->_query = rtrim($this->_query, ', ');
@@ -1821,7 +1821,7 @@ class MysqliDb
             $msg = $this->mysqli()->error . " query: " . $this->_query;
             $num = $this->mysqli()->errno;
             $this->reset();
-            throw new Exception($msg, $num);
+            throw new \Exception($msg, $num);
         }
 
         if ($this->traceEnabled) {
@@ -1988,7 +1988,7 @@ class MysqliDb
             }
 
             if (!in_array($type, array_keys($types))) {
-                throw new Exception("invalid interval type in '{$diff}'");
+                throw new \Exception("invalid interval type in '{$diff}'");
             }
 
             $func .= " " . $incr . " interval " . $items . " " . $types[$type] . " ";
@@ -2017,13 +2017,13 @@ class MysqliDb
      *
      * @param int $num increment by int or float. 1 by default
      *
-     * @throws Exception
+     * @throws \Exception
      * @return array
      */
     public function inc($num = 1)
     {
         if (!is_numeric($num)) {
-            throw new Exception('Argument supplied to inc must be a number');
+            throw new \Exception('Argument supplied to inc must be a number');
         }
         return array("[I]" => "+" . $num);
     }
@@ -2038,7 +2038,7 @@ class MysqliDb
     public function dec($num = 1)
     {
         if (!is_numeric($num)) {
-            throw new Exception('Argument supplied to dec must be a number');
+            throw new \Exception('Argument supplied to dec must be a number');
         }
         return array("[I]" => "-" . $num);
     }

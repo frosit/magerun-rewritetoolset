@@ -8,6 +8,12 @@
  * @copyright   Copyright (c) 2016 Fabio Ros - FROSIT
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  */
+/**
+ * Dev notes
+ *
+ * @todo refactor or remove
+ *
+ */
 
 namespace Frosit\Utils\Magento;
 
@@ -57,15 +63,15 @@ class Urls
             $baseUrl = \Mage::app()->getStore($storeId)->getBaseUrl(\Mage_Core_Model_Store::URL_TYPE_LINK);
             $storeUrls = array();
 
-            if ($config['products']) {
+            if (!$config['products']) {
                 $storeUrls['product'] = $this->appendSettings($this->getProductUrls($storeId, $baseUrl), $config);
             }
 
-            if ($config['categories']) {
+            if (!$config['categories']) {
                 $storeUrls['category'] = $this->appendSettings($this->getCategoryUrls($storeId, $baseUrl), $config);
             }
 
-            if ($config['cms']) {
+            if (!$config['cms']) {
                 $storeUrls['cms'] = $this->appendSettings($this->getCmsUrls($storeId, $baseUrl), $config);
             }
 

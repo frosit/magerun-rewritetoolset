@@ -191,3 +191,53 @@ __options (current)__
 * identifies platform and platform available commands (wc, cat)
 * identifies apache, nginx, hypernode (apache parsing unfinished)
 
+
+## Section: url
+
+This section contains commands for adding sources to whitelists. For more information about the whitelisting methodology, refer to the wiki.
+In short, we add all url's that are considered active and indexed by search engines to a whitelist. We compare this whitelist to the duplicate rewrites database to secure all rewrites that hold any value.
+There are 3 methods of adding urls to the whitelist, one is specified is log:parse.
+
+
+### rewrites:url:csv
+
+Adds urls to a whitelist json db from CSV source. Adding a google analytics CSV is adviced.
+
+* stable, documented
+
+` magerun rewrites:url:csv --csv google.csv --column Bestemingspagina`
+
+__options__
+
+* --csv : path to csv file
+* --column : column that holds the urls
+
+The [ParseCSV](https://github.com/parsecsv/parsecsv-for-php) class is used for autodetection.
+
+
+### rewrites:url:visitor
+
+Adds urls with a max-age from the log_url_info table to the whitelist. This requires _system_log_enable_log_ to be set to yes in system configuration.
+
+`magerun rewrites:url:visitor`
+
+__options__
+
+* --max-age : The maximum age in days for urls in the visitor log to be added to the whitelist, default: 60
+
+### rewrites:url:whitelist
+
+Combines, filters and compares all urls from sources to the rewrites table for whitelisting important rewrites.
+Refer to the wiki for more information about the whitelist methodology which is a safegaurd for valuable rewrites.
+
+* development, tested
+
+`magerun rewrites:url:whitelist`
+
+__options__
+
+* --max-age : maximum age in days for rewrites in core_url_rewrite to be added to the master whitelist for safekeeping, default: 60
+* --debug : dumps json in each step for debugging (merging, create segments, query segments)
+
+
+

@@ -18,6 +18,9 @@ commands:
     - Frosit\Magento\Command\Rewrites\Clean\OlderThanCommand
     - Frosit\Magento\Command\Rewrites\Fix\ProductsCommand
     - Frosit\Magento\Command\Rewrites\Log\ParseCommand
+    - Frosit\Magento\Command\Rewrites\Url\WhitelistCommand
+    - Frosit\Magento\Command\Rewrites\Url\CsvCommand
+    - Frosit\Magento\Command\Rewrites\Url\VisitorCommand
 
   Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand:
     twig: "rewrites/analysis/totals.twig"

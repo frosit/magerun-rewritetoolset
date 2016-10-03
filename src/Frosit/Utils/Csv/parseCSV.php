@@ -1,9 +1,12 @@
 <?php
 
+
 namespace Frosit\Utils\Csv;
 
-
-
+/**
+ * Class parseCSV
+ * @package Frosit\Utils\Csv
+ */
 class parseCSV {
 
     /*
