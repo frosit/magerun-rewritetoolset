@@ -23,9 +23,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-header">
-                <h1>Core URL Rewrite Statistics <small>Generated: {{ date }}</small></h1>
+                <h1>Core URL Rewrite Statistics
+                    <small>Generated: {{ date }}</small>
+                </h1>
             </div>
-            <p>Totals of duplicated per store.</p>
+            <p>The amount of duplicates per category ID or product ID.</p>
         </div>
     </div>
     <div class="row">
@@ -33,25 +35,19 @@
             <table class="table table-responsive">
                 <thead>
                 <tr>
-                    <th>Store Id</th>
-                    <th>Store Name</th>
-                    <th>Active</th>
-                    <th>Product Dupes</th>
-                    <th>% PD of Total</th>
-                    <th>Category Dupes</th>
-                    <th>% CD of Total</th>
+                    <th>Category ID</th>
+                    <th>#</th>
+                    <th>Product ID</th>
+                    <th>#</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for stat in statistics %}
                     <tr>
-                        <td>{{ stat.id }}</td>
-                        <td>{{ stat.name }}</td>
-                        <td>{{ stat.active }}</td>
-                        <td>{{ stat.duplicate_product_rewrites }}</td>
-                        <td>{{ stat.percentage_duplicate_product_rewrites }}</td>
-                        <td>{{ stat.duplicate_category_rewrites }}</td>
-                        <td>{{ stat.percentage_duplicate_category_rewrites }}</td>
+                        <td>{{ stat[0] }}</td>
+                        <td>{{ stat[1] }}</td>
+                        <td>{{ stat[2] }}</td>
+                        <td>{{ stat[3] }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

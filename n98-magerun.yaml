@@ -25,6 +25,9 @@ commands:
   Frosit\Magento\Command\Rewrites\Analysis\TotalsCommand:
     twig: "rewrites/analysis/totals.twig"
 
+  Frosit\Magento\Command\Rewrites\Analysis\TopCommand:
+    twig: "rewrites/analysis/top.twig"
+
   Frosit\Magento\Command\Rewrites\Analysis\HistoryCommand:
     twig: "rewrites/analysis/history.twig"
 
